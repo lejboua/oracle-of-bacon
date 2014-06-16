@@ -1,6 +1,8 @@
 The Oracle of Bacon
 ===================
 
+# Line added by me on 2014-06-16, AA
+
 The goals of this assignment are as follows:
 
 1. Give you more exposure to RSpec and to more advanced and idiomatic
