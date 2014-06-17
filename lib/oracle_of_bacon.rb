@@ -12,7 +12,7 @@ class OracleOfBacon
 
   attr_accessor :from, :to
   attr_reader :api_key, :response, :uri
-  
+
   include ActiveModel::Validations
   validates_presence_of :from
   validates_presence_of :to
@@ -21,10 +21,18 @@ class OracleOfBacon
 
   def from_does_not_equal_to
     # YOUR CODE HERE
+    errors.add(:from_does_not_equal_to, "From cannot be the same as To") if @from.eql?(@to)
   end
 
   def initialize(api_key='')
     # your code here
+    if api_key.blank?
+      @api_key = '38b99ce9ec87'
+    else
+      @api_key = api_key
+    end
+
+    @from = @to = 'Kevin Bacon'
   end
 
   def find_connections
@@ -45,7 +53,7 @@ class OracleOfBacon
     # your code here: set the @uri attribute to properly-escaped URI
     #   constructed from the @from, @to, @api_key arguments
   end
-      
+
   class Response
     attr_reader :type, :data
     # create a Response object from a string of XML markup.
@@ -60,13 +68,31 @@ class OracleOfBacon
       if ! @doc.xpath('/error').empty?
         parse_error_response
       # your code here: 'elsif' clauses to handle other responses
+      elsif ! @doc.xpath('/link').empty?
+        parse_graph_response
+      elsif ! @doc.xpath('/spellcheck').empty?
+        parse_spellcheck_response
       # for responses not matching the 3 basic types, the Response
-      # object should have type 'unknown' and data 'unknown response'         
+      # object should have type 'unknown' and data 'unknown response'
+      else
+        @type = :unknown
+        @data = 'unknown response type'
       end
     end
+
     def parse_error_response
       @type = :error
       @data = 'Unauthorized access'
+    end
+
+    def parse_graph_response
+      @type = :graph
+      @data = @doc.xpath('/link').xpath('movie|actor').map { |n| n.text }
+    end
+
+    def parse_spellcheck_response
+      @type = :spellcheck
+      @data = @doc.xpath('/spellcheck').xpath('match').map { |n| n.text }
     end
   end
 end

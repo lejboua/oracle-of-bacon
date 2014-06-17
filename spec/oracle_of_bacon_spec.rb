@@ -5,7 +5,7 @@ require 'debugger'
 
 describe OracleOfBacon do
   before(:all) { FakeWeb.allow_net_connect = false }
-  describe 'instance', :pending => true do
+  describe 'instance' do
     before(:each) { @orb = OracleOfBacon.new('fake_api_key') }
     describe 'when new' do
       subject { @orb }
@@ -36,7 +36,7 @@ describe OracleOfBacon do
       end
     end
   end
-  describe 'parsing XML response', :pending => true do
+  describe 'parsing XML response' do
     describe 'for unauthorized access/invalid API key' do
       subject { OracleOfBacon::Response.new(File.read 'spec/unauthorized_access.xml') }
       its(:type) { should == :error }
@@ -54,7 +54,7 @@ describe OracleOfBacon do
       its(:data) { should == ["Ian McKellen", "Doogal (2006)", "Kevin Smith (I)",
                               "Fanboys (2009)", "Carrie Fisher"] }
     end
-    describe 'for a spellcheck match' do
+   describe 'for a spellcheck match' do
       subject { OracleOfBacon::Response.new(File.read 'spec/spellcheck_example.xml') }
       its(:type) { should == :spellcheck }
       its(:data) { should have(34).elements }
